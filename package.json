@@ -10,7 +10,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "To-do list project",
   "devDependencies": {
     "css-loader": "^7.1.2",
     "html-loader": "^5.1.0",
