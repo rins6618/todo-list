@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.flex {
+    display: flex;
+}
+
+.grid {
+    display: grid;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    background-color: #efefef;
+}
+
+main {
+    padding: 1rem;
+    margin-left: 300px;
+}
