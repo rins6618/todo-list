@@ -6,8 +6,20 @@
     <title>Todo List</title>
 </head>
 <body>
-    <nav class="grid" id="sidebar">
-        <header></header>
+    <nav class="flex" id="sidebar">
+        <header>
+            <button id="project-selector" class="flex">
+                <iconify-icon icon="material-symbols:keyboard-arrow-down-rounded" class="flex" id="project-arrow-icon"></iconify-icon>
+                <div id="project-icon" class="flex">P</div>
+                <div id="project-name" class="flex">Lorem Ipsum dolor sit amet</div>
+            </button>
+            <div id="project-dropdown" class="dropdown-content">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+              </div>
+            <iconify-icon icon="material-symbols:side-navigation"  style=" font-size: 2rem;" class="toggle-btn"></iconify-icon>
+        </header>
         <ul class="flex listing"></ul>
         <ul class="flex listing"></ul>
         <ul class="flex listing"></ul>

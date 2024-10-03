@@ -1,24 +1,160 @@
 #sidebar {
-    margin: 0.5rem 0.5rem 0.5rem 0;
-    width: 300px;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr 3fr 3fr 3fr;
-    height: calc(100% - 1rem);
+    flex-direction: column;
+    margin: 0.5rem 0.5rem 0 0;
+    width: 30rem;
+    height: 100%;
+    padding: 1rem;
+
+    transition: width .3s;
 
     position: fixed;
-    z-index: 1;
+    z-index: 2;
     top: 0;
     left: 0;
     background-color: #fff;
 
-    border-radius: 0rem 1rem 1rem 0rem;
+    overflow: hidden;
+
+    border-radius: 0rem 1rem 0rem 0rem;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }           
+
+#sidebar > * {
+    overflow-x: hidden;
+    flex: 3 0 auto;
+}
+
+#sidebar.close {
+    width: 5rem;
+}
+
+#sidebar header {
+    transition: background-color .3s;
+    flex: 1 0 auto;
+    position: relative;
+    overflow: visible;
+}
+
+#sidebar header:has(#project-dropdown.show) {
+    flex: 3 0 auto;
+}
+#sidebar .toggle-btn {
+    z-index: 10;
+    cursor: pointer;
+    padding: 0 0.1rem;
+    position: absolute;
+    top: 1rem;
+    right: 0.5rem;
+    color: #888;
+    background-color: #fff;
+    transition: color .1s;
+}
+
+#sidebar .toggle-btn:hover {
+    color: #444;
+}
+
+body:has(#sidebar.close) main {
+    margin-left: 7rem;
+}
+
+body:has(#sidebar.close) #sidebar > header > :not(.toggle-btn) {
+    animation: fade .3s forwards;
+} 
+
+body:has(#sidebar.close) #sidebar button {
+    pointer-events: none;
+}
 
 #sidebar:first-child {
     border-top-right-radius: 1rem;
 }
 
-#sidebar:last-child {
-    border-bottom-right-radius: 1rem;
+#project-selector {
+    z-index: 3;
+    background: none;
+    border: none;
+    font-size: inherit;
+    transition: background-color .1s;
+    transition: box-shadow .1s;
+    position: relative;
+    padding: 1rem;
+    cursor: pointer;
+    align-items: center;
+    gap: 1ch;
+    width: 75%;
+    border-radius: 0.5rem;
+    box-shadow: none;
+}
+
+#project-selector > * {
+    pointer-events: none;
+}
+
+#project-selector:hover {
+    background-color: #eee;
+}
+
+#project-icon {
+    background-color: orange;
+    border-radius: 5%;
+    aspect-ratio: 1 / 1;
+    width: 2rem;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    color: #fff;
+}
+
+#project-name {
+    max-width: 18ch;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 75%;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    z-index: 2;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #888;
+}
+
+#sidebar header:has(.dropdown-content.show) #project-selector {
+    background-color: #eee;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.show {
+    display: block;
+    margin-top: -0.5rem;
+    padding-top: 0.5rem;
+    height: 65%;
+}  
+
+main {
+    transition: margin-left .3s;
+    padding: 1rem;
+  }
+
+@keyframes fade {
+    from {
+        opacity: 100%;
+    }
+    to {
+        opacity: 0%;
+        display: none;
+    }
 }
