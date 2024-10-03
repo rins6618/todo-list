@@ -2,7 +2,7 @@
     flex-direction: column;
     margin: 0.5rem 0.5rem 0 0;
     width: 30rem;
-    height: 100%;
+    height: 100dvh;
     padding: 1rem;
 
     transition: width .3s;
@@ -50,16 +50,21 @@
     transition: color .1s;
 }
 
+#sidebar:not(.close) .toggle-btn {
+    color: #444;
+}
+
 #sidebar .toggle-btn:hover {
     color: #444;
 }
+
 
 body:has(#sidebar.close) main {
     margin-left: 7rem;
 }
 
 body:has(#sidebar.close) #sidebar > header > :not(.toggle-btn) {
-    animation: fade .3s forwards;
+    animation: fade .4s forwards;
 } 
 
 body:has(#sidebar.close) #sidebar button {
@@ -76,7 +81,7 @@ body:has(#sidebar.close) #sidebar button {
     border: none;
     font-size: inherit;
     transition: background-color .1s;
-    transition: box-shadow .1s;
+    transition: box-shadow .05s;
     position: relative;
     padding: 1rem;
     cursor: pointer;
@@ -96,6 +101,7 @@ body:has(#sidebar.close) #sidebar button {
 }
 
 #project-icon {
+    flex-shrink: 0;
     background-color: orange;
     border-radius: 5%;
     aspect-ratio: 1 / 1;
@@ -129,7 +135,7 @@ body:has(#sidebar.close) #sidebar button {
 }
 
 .dropdown-content a:hover {
-    background-color: #888;
+    background-color: #ccc;
 }
 
 #sidebar header:has(.dropdown-content.show) #project-selector {
@@ -142,6 +148,7 @@ body:has(#sidebar.close) #sidebar button {
     margin-top: -0.5rem;
     padding-top: 0.5rem;
     height: 65%;
+    overflow-y: scroll;
 }  
 
 main {
