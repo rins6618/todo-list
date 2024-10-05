@@ -13,15 +13,35 @@
     left: 0;
     background-color: #fff;
 
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: hidden;
 
     border-radius: 0rem 1rem 0rem 0rem;
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }           
 
-#sidebar > * {
+#scrollable-sidebar {
+    flex: 1;
+    border-top: 0.25rem solid #eee;
+    border-bottom: 0.25rem solid #eee;
+    flex-direction: column;
+    overflow-y: scroll;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+#scrollable-sidebar > * {
+    padding: 0 1rem;
     overflow-x: hidden;
-    flex: 3 0 auto;
+    overflow-y: visible;
+}
+
+#scrollable-sidebar > *:first-child {
+    border-top: none;
+}
+
+#scrollable-sidebar::-webkit-scrollbar {
+    display: none;
 }
 
 #sidebar.close {
@@ -30,14 +50,11 @@
 
 #sidebar header {
     transition: background-color .3s;
-    flex: 1 0 auto;
+    height: 5rem;
     position: relative;
     overflow: visible;
 }
 
-#sidebar header:has(#project-dropdown.show) {
-    flex: 3 0 auto;
-}
 #sidebar .toggle-btn {
     z-index: 10;
     cursor: pointer;
@@ -63,8 +80,12 @@ body:has(#sidebar.close) main {
     margin-left: 7rem;
 }
 
+body:has(#sidebar.close) #sidebar > :not( header) {
+    animation: fade .2s forwards;
+} 
+
 body:has(#sidebar.close) #sidebar > header > :not(.toggle-btn) {
-    animation: fade .4s forwards;
+    animation: fade .2s forwards;
 } 
 
 body:has(#sidebar.close) #sidebar button {
@@ -100,9 +121,15 @@ body:has(#sidebar.close) #sidebar button {
     background-color: #eee;
 }
 
+#project-arrow-icon {
+    font-size: 1.25rem;
+}
+
 #project-icon {
+    margin-right: 1ch;
     flex-shrink: 0;
-    background-color: orange;
+    background: rgb(163,163,163);
+    background: linear-gradient(135deg, rgba(163,163,163,1) 0%, rgba(58,58,58,1) 100%);
     border-radius: 5%;
     aspect-ratio: 1 / 1;
     width: 2rem;
@@ -113,8 +140,10 @@ body:has(#sidebar.close) #sidebar button {
 }
 
 #project-name {
+    font-size: 1.25rem;
     max-width: 18ch;
     text-overflow: ellipsis;
+    overflow-x: hidden;
     white-space: nowrap;
 }
 
@@ -144,17 +173,71 @@ body:has(#sidebar.close) #sidebar button {
 }
 
 .show {
-    display: block;
+    display: flex;
+    flex-direction: column;
     margin-top: -0.5rem;
     padding-top: 0.5rem;
-    height: 65%;
-    overflow-y: scroll;
+    height: fit-content;
+    max-height: 12rem;
+    overflow-y: auto;
+    border-radius: 0rem 0rem 1rem 1rem;
 }  
+
+
+#scrollable-sidebar ul {
+    min-height: fit-content;
+    flex-direction: column;
+    margin: 0 1rem;
+    border-top: 1px solid #eee;
+    padding: 1rem;
+    gap: 1rem;
+}
+
+#sidebar li > h3 {
+    padding: 0.5rem 0 1rem 0;
+    user-select: none;
+}
+
+#sidebar li > button {
+    cursor: pointer;
+    width: 100%;
+    transition: color .3s;
+    transition: background-color .3s;
+    color: #444;
+    border: none;
+    background-color: transparent;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    font-size: 1.25rem;
+    gap: 2ch;
+}
+
+#sidebar li > button:hover {
+    background-color: #eee;
+    color: #000;
+}
+
+#sidebar li > button > iconify-icon {
+    font-size: 2rem;
+}
+
+#sidebar li > button > span {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#sidebar > footer > ul {
+    margin: 0 1rem;
+    min-height: fit-content;
+    flex-direction: column;
+    padding: 1rem;
+}
 
 main {
     transition: margin-left .3s;
     padding: 1rem;
-  }
+}
 
 @keyframes fade {
     from {

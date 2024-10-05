@@ -24,3 +24,7 @@ html, body {
 main {
     margin-left: 30rem;
 }
+
+li {
+    list-style: none;
+}
