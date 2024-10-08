@@ -156,14 +156,14 @@ body:has(#sidebar.close) #sidebar button {
     z-index: 2;
 }
 
-.dropdown-content a {
+.dropdown-content div {
     color: black;
     padding: 12px 16px;
     text-decoration: none;
     display: block;
 }
 
-.dropdown-content a:hover {
+.dropdown-content div:hover {
     background-color: #ccc;
 }
 
@@ -188,14 +188,20 @@ body:has(#sidebar.close) #sidebar button {
     min-height: fit-content;
     flex-direction: column;
     margin: 0 1rem;
-    border-top: 1px solid #eee;
     padding: 1rem;
     gap: 1rem;
+    scrollbar-width: none;
 }
 
-#sidebar li > h3 {
-    padding: 0.5rem 0 1rem 0;
+#sidebar ul > li > h3 {
+    border-top: 1px solid #eee;
+    padding: 1.5rem 0 1rem 0;
     user-select: none;
+}
+
+#sidebar ul > li:first-child > h3{
+    border-top: none;
+    padding: 0.5rem 0 1rem 0;
 }
 
 #sidebar li > button {

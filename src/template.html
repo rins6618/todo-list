@@ -14,13 +14,13 @@
                 <div id="project-name" class="flex">Blank Project</div>
             </button>
             <div id="project-dropdown" class="dropdown-content">
-                <a href="#">Link 1</a>
-                <a href="#">Link 1</a>
-                <a href="#">Link 1</a>
-                <a href="#">Link 1</a>
-                <a href="#">Link 1</a>
-                <a href="#">Link 1</a>
-                <a href="#">Link 1</a>
+                <div>Link 1</div>
+                <div>Link 1</div>
+                <div>Link 1</div>
+                <div>Link 1</div>
+                <div>Link 1</div>
+                <div>Link 1</div>
+                <div>Link 1</div>
               </div>
             <iconify-icon icon="material-symbols:side-navigation"  style=" font-size: 2rem;" class="toggle-btn"></iconify-icon>
         </header>
@@ -30,7 +30,7 @@
                     <h3> Projects</h3>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex" id="create-proj">
                         <iconify-icon icon="material-symbols:add-box-outline-rounded"></iconify-icon>
                         <span class="flex">Create new project...</span>
                     </button>
@@ -41,8 +41,6 @@
                         <span class="flex">Delete a project...</span>
                     </button>
                 </li>
-            </ul>
-            <ul class="flex listing">
                 <li>
                     <h3>This project</h3>
                 </li>
@@ -89,8 +87,12 @@
             </ul>
         </footer>
     </nav>
-    <main>
-        
+    <main class="grid empty">
+        <div class="flex" id="blank-content">
+            <h3> No Project Open</h3>
+            <iconify-icon icon="material-symbols:iframe-off-outline-rounded"></iconify-icon>
+            <span>Create a project on the sidebar!</span>   
+        </div>
     </main>
 </body>
 </html>

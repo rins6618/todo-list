@@ -1,0 +1,30 @@
+main {
+    justify-content: baseline;
+    width: auto;
+    height: 100%;
+}
+
+main.empty {
+    place-items: center;
+}
+
+#blank-content {
+    text-align: center;
+    color: #888;
+    flex-direction: column;
+    align-items: center;
+    font-size: 3rem;
+    gap: 3rem;
+
+    background-color: #ddd;
+    padding: 3rem;
+    border-radius: 2rem;
+}
+
+#blank-content > iconify-icon {
+    font-size: 6rem;
+}
+
+#blank-content > span {
+    font-size: 2rem;
+}
