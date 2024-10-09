@@ -6,6 +6,11 @@
     <title>Todo List</title>
 </head>
 <body>
+    <dialog id="info-box">
+        <div id="info-body"></div>
+        <div class="info-bg"></div>
+    </dialog>
+
     <nav class="flex" id="sidebar">
         <header>
             <button id="project-selector" class="flex">
@@ -36,7 +41,7 @@
                     </button>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="delete-proj">
                         <iconify-icon icon="material-symbols:delete-outline-rounded"></iconify-icon>
                         <span class="flex">Delete a project...</span>
                     </button>
@@ -45,25 +50,25 @@
                     <h3>This project</h3>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="rename-proj">
                         <iconify-icon icon="ri:quill-pen-line"></iconify-icon>
                         <span class="flex">Rename this project...</span>
                     </button>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="notes-proj">
                         <iconify-icon icon="material-symbols:featured-play-list-outline"></iconify-icon>
                         <span class="flex">View notes...</span>
                     </button>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="dates-proj">
                         <iconify-icon icon="material-symbols:calendar-clock-outline-rounded"></iconify-icon>
                         <span class="flex">View due dates...</span>
                     </button>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="recolor-proj">
                         <iconify-icon icon="mdi:paint-outline"></iconify-icon></iconify-icon>
                         <span class="flex">Change project color...</span>
                     </button>
@@ -73,13 +78,13 @@
         <footer>
             <ul class="flex listing">
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="about">
                         <iconify-icon icon="mdi:scroll-outline"></iconify-icon>
                         <span class="flex">About</span>
                     </button>
                 </li>
                 <li>
-                    <button class="flex">
+                    <button class="flex dialog-button" id="settings">
                         <iconify-icon icon="mdi:cog-outline"></iconify-icon>
                         <span class="flex">Settings</span>
                     </button>

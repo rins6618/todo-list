@@ -1,16 +1,23 @@
 class Project {
 
-    static #blankProject = new Project('gray', 'Blank');
+    static #blankProject = new Project('gray', 'Blank', true);
     static #activeProject = this.#blankProject;
     static #projects = new Array();
 
     color = 'red';
     name = 'Project1';
+    #isBlankDefault;
 
-    constructor(color, name) {
+    constructor(color, name, isBlankDefault) {
         this.color = color;
         this.name = name;
+        this.#isBlankDefault = isBlankDefault; 
     }
+
+    static isActiveBlank() {
+        return this.#activeProject.#isBlankDefault;
+    }
+
 
     static setActiveProject(project) {
         this.#activeProject = project;

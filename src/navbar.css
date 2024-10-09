@@ -224,6 +224,10 @@ body:has(#sidebar.close) #sidebar button {
     color: #000;
 }
 
+#sidebar li > button * {
+    pointer-events: none;
+}
+
 #sidebar li > button > iconify-icon {
     font-size: 2rem;
 }

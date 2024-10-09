@@ -1,0 +1,65 @@
+#info-box {
+
+    pointer-events: none;
+    padding: 0;
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    border: none;
+}
+
+#info-box[open] {
+    background: none;
+    display: block;
+}
+
+#info-box[open] > .info-bg {
+    pointer-events: none;
+    z-index: 10;
+    position: fixed;
+    animation: fadeBg .2s forwards;
+    width: 100%;
+    height: 100%;
+    background: black;
+
+}
+
+#info-box[open] > #info-body {
+    padding: 3rem;
+    z-index: 11;
+    position: fixed;
+    background: #fff;
+    width: 60%;
+    height: 80%;
+    animation: fadeBody .2s forwards;
+    left: 20%;
+    border-radius: 1rem;
+}
+
+#info-body .heading {
+    font-size: 2rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 0.25rem solid #eee;
+}
+
+@keyframes fadeBg {
+    from {
+        opacity: 0%;
+    }
+    to {
+        opacity: 30%;
+    }
+}
+
+
+@keyframes fadeBody {
+    from {
+        top: 100%;
+    }
+    to {
+        top: 10%;
+    }
+}

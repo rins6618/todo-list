@@ -8,6 +8,10 @@ main.empty {
     place-items: center;
 }
 
+main:not(.empty) #blank-content {
+    display: none;
+}
+
 #blank-content {
     text-align: center;
     color: #888;
