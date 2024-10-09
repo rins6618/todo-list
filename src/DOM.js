@@ -1,5 +1,6 @@
 import { Project } from './project';
 import './dialog.css'
+import { ToDo } from './todo';
 
 class DialogWindow {
     static #dialog = document.querySelector("#info-box");
@@ -10,9 +11,9 @@ class DialogWindow {
             if (!e.target.matches('#info-body, .dialog-button')) {
                 if (this.#dialog.open) {
                 this.close();
-              }
+                }
             }
-          }); 
+        }); 
     }
 
     static resetContent() {
@@ -60,8 +61,8 @@ class DOMEditor {
 
 
 
-    // Must happen before everything else; "static constructor"
-    static assignEvents() {
+    // "static constructor"
+    static {
 
         DialogWindow.assignEvents();
 
@@ -92,16 +93,34 @@ class DOMEditor {
         const COLORS = ['rgb(214, 44, 75)', 'rgb(148, 173, 215)', 'rgb(155, 236, 0)', 'rgb(249, 76, 16)', 'rgb(248, 222, 34)', 'rgb(210, 100, 154)'];
         let counter = 1;
         this.createProjBtn.addEventListener('click', e => {
-        
-          const idx = Math.floor(Math.random() * COLORS.length);  
-          const project = new Project(COLORS[idx], `Project${counter}`, false);
-          counter++;
- 
-          Project.setActiveProject(project);
-          Project.appendToProjects(project);
+            
+            const idx = Math.floor(Math.random() * COLORS.length);  
+            const project = new Project(COLORS[idx], `Project${counter}`, false);
+            counter++;
+    
+            project.pushTodo(
+                new ToDo('Super Extra Long Todo Name That Gets Clipped', new Date(), 1), 
+                new ToDo('Do that', new Date(), 2), 
+                new ToDo('and that', new Date(), 3), 
 
-          console.log(project);
-          this.updateProjectList();
+                new ToDo('Do this', new Date(), 3), 
+                new ToDo('Do that', new Date(), 1), 
+                new ToDo('and that', new Date(), 2), 
+
+                new ToDo('Do this', new Date(), 2), 
+                new ToDo('Do that', new Date(), 1), 
+                new ToDo('and that', new Date(), 3), 
+
+                new ToDo('Do this', new Date(), 3), 
+                new ToDo('Do that', new Date(), 2), 
+                new ToDo('and that', new Date(), 1), 
+            );    
+
+            Project.setActiveProject(project);
+            Project.appendToProjects(project);
+
+            console.log(project);
+            this.updateProjectList();
         });
 
         this.deleteProjBtn.addEventListener('click', e => {
@@ -134,23 +153,18 @@ class DOMEditor {
     }
 
     static updateActiveProject() {
+        this.main.replaceChildren();
         const activeProject = Project.getActiveProject();
-
-        if (!Project.isActiveBlank()) {
-            if (this.main.classList.contains("empty")) {
-                this.main.classList.remove("empty");
-            }
-        } else {
-            if (!this.main.classList.contains("empty")) {
-                this.main.classList.add("empty");
-            }
-        }
         const icon = document.querySelector("#project-icon");
+        let projectName = activeProject.name;
+        if (projectName.length > 12) {
+            projectName = projectName.slice(0, 9) + '...';
+        }
         document.querySelector("#project-name").textContent = activeProject.name;
         icon.textContent = activeProject.name.toUpperCase().at(-1);
         icon.setAttribute('style', `background: linear-gradient(135deg, ${activeProject.color} 0%, hsl(from ${activeProject.color} h s calc(l - 10)) 100%);`);
+        this.updateMainContent();
     }
-
 
     static updateProjectList() {
         this.projectDropdown.replaceChildren();
@@ -168,7 +182,138 @@ class DOMEditor {
 
         }
     }
+
+    static updateMainContent() {
+        if (!Project.isActiveBlank()) {
+            if (this.main.classList.contains("empty")) {
+                this.main.classList.remove("empty");
+                
+            }
+        } else {
+            if (!this.main.classList.contains("empty")) {
+                this.main.classList.add("empty");
+                return;
+            }
+        }
+        
+        const activeProject = Project.getActiveProject();
+        const toDoList = activeProject.getTodos();
+        const listElem = document.createElement('ul');
+
+        
+        const gradientTop = document.createElement('div');
+        const gradientBottom = document.createElement('div');
+        gradientTop.classList.add("gradient", "top");
+        gradientBottom.classList.add("gradient", "bottom");
+        
+
+        this.main.append(gradientTop, gradientBottom);
+        listElem.classList.add("flex");
+
+        toDoList.forEach( (toDo, index) => {
+            const li = document.createElement('li');
+
+            const iconCheck = document.createElement("iconify-icon");
+            const iconMore = document.createElement("iconify-icon");
+            iconMore.classList.add('more');
+
+            const moreContent = document.createElement("div"); 
+            moreContent.classList.add("more-content");
+
+            // Inner buttons scope
+            {
+                
+                /**
+                 * @type {{name: string, icon: string, alt: string}[]}
+                 */
+                const BUTTONS = [
+                    {name: 'move-up', icon: 'material-symbols:arrow-upward-alt-rounded', alt: 'Move to-do up...'},
+                    {name: 'move-down', icon: 'material-symbols:arrow-downward-alt-rounded', alt: 'Move to-do down...'},
+                    {name: 'delete', icon: 'material-symbols:delete-outline-rounded', alt: 'Remove to-do...'},
+                    {name: 'change-priority', icon: 'material-symbols:stack-star', alt: 'Change priority...'},
+                ];
+
+                const callback = function(name) {
+                    let parent, idx, max;
+                    switch (name) {
+                        case 'move-up':
+                            parent = li.parentNode;
+                            idx = [...parent.children].indexOf(li);
+                            if (idx <= 0) return;
+                            const above = [...parent.children][idx - 1];
+                            above.before(li);
+                            break;
+                        case 'move-down':
+                            parent = li.parentNode;
+                            max = [...parent.children].length - 1;
+                            idx = [...parent.children].indexOf(li);
+                            if (idx >= max) return;
+                            const below = [...parent.children][idx + 1];
+                            below.after(li);
+                            break;
+                        default:
+                    }
+                }
+
+                for (let button of BUTTONS) {
+                    const {name, icon, alt} = button;
+                    const elem = document.createElement('iconify-icon');
+                    elem.setAttribute('icon', icon);
+                    elem.setAttribute('title', alt);
+                    elem.addEventListener('click', e => {
+                        callback(name);
+                    });
+                    moreContent.appendChild(elem);
+                }
+            }
+
+            iconMore.setAttribute("icon", 'material-symbols:more-horiz');
+            if (toDo.isCompleted()) {
+                iconCheck.setAttribute("icon", 'material-symbols:check-circle-rounded');
+            } else {
+                iconCheck.setAttribute("icon", 'material-symbols:circle-outline');
+            }
+
+            const text = document.createElement('span');
+            let todoName = toDo.getTitle();
+            if (todoName.length > 40) {
+                todoName = todoName.slice(0, 40 - 3) + '...';
+            }
+
+            text.textContent = todoName;
+            const switchHandler = e => {
+
+                if (e.target.matches(".more-content, .more-content *")) return;
+                const status = !toDo.isCompleted();
+                toDo.setCompleted(status);
+                li.classList.toggle('completed');
+
+                if (status) {
+                    iconCheck.setAttribute("icon", 'material-symbols:check-circle-rounded');
+                } else {
+                    iconCheck.setAttribute("icon", 'material-symbols:circle-outline');
+                }
+                activeProject.removeTodo(index);
+                activeProject.emplaceTodo(index, toDo);
+            }
+
+            li.addEventListener('dblclick', switchHandler);
+            iconCheck.addEventListener('click', switchHandler);
+
+            li.classList.add('flex', toDo.getPriorityString());
+            
+            iconMore.addEventListener('click', e => {
+                moreContent.classList.toggle('show');
+            });
+            
+
+            moreContent
+            li.append(iconCheck, text, iconMore, moreContent);
+            
+            listElem.appendChild(li);
+        });
+        this.main.appendChild(listElem);
+    }
 }
 
-DOMEditor.assignEvents();
 export { DOMEditor };

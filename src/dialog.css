@@ -27,6 +27,7 @@
 }
 
 #info-box[open] > #info-body {
+    pointer-events: all;
     padding: 3rem;
     z-index: 11;
     position: fixed;
@@ -36,6 +37,8 @@
     animation: fadeBody .2s forwards;
     left: 20%;
     border-radius: 1rem;
+
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 #info-body .heading {
@@ -43,6 +46,21 @@
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     border-bottom: 0.25rem solid #eee;
+}
+
+
+@media only screen and (max-width: 600px) {
+    #info-box[open] > #info-body {
+        width: 90%;
+        left: 5%;
+    }
+
+    #info-body .heading {
+        font-size: 1.4rem;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+        border-bottom: 0.25rem solid #eee;
+    }
 }
 
 @keyframes fadeBg {
@@ -63,3 +81,4 @@
         top: 10%;
     }
 }
+

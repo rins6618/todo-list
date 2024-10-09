@@ -32,7 +32,7 @@
 
 #scrollable-sidebar > * {
     padding: 0 1rem;
-    overflow-x: hidden;
+    overflow-x: clip;
     overflow-y: visible;
 }
 
@@ -172,7 +172,7 @@ body:has(#sidebar.close) #sidebar button {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
-.show {
+.dropdown-content.show {
     display: flex;
     flex-direction: column;
     margin-top: -0.5rem;
@@ -249,6 +249,46 @@ main {
     padding: 1rem;
 }
 
+@media only screen and (max-width: 600px) {
+        
+    #sidebar {
+        flex-direction: column;
+        margin: 0.5rem 1rem 0 1rem;
+        width: calc(100% - 2rem);
+        height: 100dvh;
+        padding: 1rem;
+    
+        transition: top .3s, height .3s;
+        
+        position: fixed;
+        z-index: 2;
+        top: 0;
+        left: 0;
+        background-color: #fff;
+    
+        overflow-x: hidden;
+        overflow-y: hidden;
+    
+        border-radius: 1rem 1rem 0rem 0rem;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }    
+
+    #sidebar.close {
+        width: calc(100% - 2rem);
+        height: 13dvh;
+        top: calc(100% - 13dvh);
+    }
+
+    main,
+    body:has(#sidebar.close) main {
+        margin-left: 0;
+        padding: 1rem;
+        padding-bottom: 13dvh;
+    }
+
+    
+}
+
 @keyframes fade {
     from {
         opacity: 100%;
@@ -257,4 +297,8 @@ main {
         opacity: 0%;
         display: none;
     }
+}
+
+@keyframes transition {
+    
 }
