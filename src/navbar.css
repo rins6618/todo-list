@@ -5,7 +5,8 @@
     height: 100dvh;
     padding: 1rem;
 
-    transition: width .3s;
+    /* funny reason */
+    transition: width .3s, height .3s;
 
     position: fixed;
     z-index: 2;

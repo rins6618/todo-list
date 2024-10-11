@@ -3,6 +3,9 @@ import './dialog.css'
 import { ToDo } from './todo';
 
 import { Storage } from './storage';
+
+
+// Dialog abstraction layer due to reuse and complex behaviour;
 class DialogWindow {
     static #dialog = document.querySelector("#info-box");
     static #dialogBody = this.#dialog.querySelector("#info-body");
@@ -18,16 +21,7 @@ class DialogWindow {
     }
 
     static resetContent() {
-        this.#dialogBody.replaceChildren();
-    }
-
-    static emplaceElement(elementType, classes, textContent, ID = null, parent = "#info-body") {
-        const element = document.createElement(elementType);
-        element.classList.add(...classes);
-        element.textContent = textContent;
-        if (typeof ID === "string")
-            element.ID = ID;
-        document.querySelector(parent).appendChild(element);
+        document.querySelector('body').append(...this.#dialogBody.childNodes);
     }
 
     static appendElement(parent, ...nodes) {
@@ -39,12 +33,14 @@ class DialogWindow {
     }
 
     static close() {
+        this.resetContent();
         this.#dialog.close();
     }
 };
 
 class DOMEditor {
 
+    static #mobile = window.matchMedia("(max-width: 600px)");
 
     static sidebar = document.querySelector("#sidebar");
     static main = document.querySelector("main");
@@ -69,6 +65,18 @@ class DOMEditor {
 
     // "static constructor"
     static {
+
+        const mobile = this.#mobile;
+        const changeButton = (e) => {
+            if (mobile.matches) {
+                this.closeBtn.setAttribute("icon", 'material-symbols:bottom-navigation');
+            } else {
+                this.closeBtn.setAttribute("icon", 'material-symbols:side-navigation');
+            }
+        }
+        changeButton
+
+        mobile.addEventListener("change", changeButton);
 
         DialogWindow.assignEvents();
 
@@ -120,7 +128,8 @@ class DOMEditor {
 
         this.deleteProjBtn.addEventListener('click', e => {
             DialogWindow.resetContent();
-            DialogWindow.emplaceElement("h3", ["heading"], "Delete a project...");
+            const content = document.querySelector("#delete-dialog");
+            DialogWindow.appendElement('#info-body', content);
             DialogWindow.open();
         });
         
@@ -142,8 +151,12 @@ class DOMEditor {
             DialogWindow.open();
         });
 
+        this.aboutBtn.addEventListener('click', e => {
+
+        });
+
         this.settingsBtn.addEventListener('click', e => {
-            const content = document.querySelector("#settingsDialog");
+            const content = document.querySelector("#settings-dialog");
             const deleteBtn = content.querySelector(".delete-projs-btn");
             
             deleteBtn.addEventListener('click', e => {

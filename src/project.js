@@ -3,7 +3,17 @@ import { randomID16 } from './utility';
 import { Storage } from './storage';
 
 
+// static part of project is a SOLID violation
+// Single Principle
+// I let it go, due to the fact that encapsulation makes the ID hidden inside of Project.
 
+
+/**
+ * Implements the Project object and the manipulation of user projects
+ *
+ * @class Project
+ * @typedef {Project}
+ */
 class Project {
 
     static #blankProject = new Project('gray', 'Blank', true);
@@ -85,6 +95,12 @@ class Project {
     getID() {
         return this.#ID;
     }
+
+
+    // json marshalling is a SOLID violation
+    // Single Principle
+    // Not fond of implementing a module for this project in particular.
+
 
     /**
      * @typedef {Object} publicProject

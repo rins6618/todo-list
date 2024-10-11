@@ -95,6 +95,10 @@ class ToDo {
         return this.#title;
     }
 
+    // json marshalling is a SOLID violation
+    // Single Principle
+    // Not fond of implementing a module for this project in particular.
+
     serializeJSON() {
         const publicObj = { 
             completed: this.#completed,
