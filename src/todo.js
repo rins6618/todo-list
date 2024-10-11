@@ -32,7 +32,6 @@ class ToDo {
         this.#dueDate = dueDate;
         if (typeof priority === 'number') {
             const matchedPriority = priorityMap.get(priority);
-            console.log(matchedPriority, priorityMap);
             if (matchedPriority) {
                 this.#priority = matchedPriority;
             } else {
@@ -45,13 +44,12 @@ class ToDo {
         this.#checklist = checklist;
     }
 
-    #constructFromJSON(title, dueDate, priority, notes = null, checklist = null) {
-        this.#completed = false;
+    #constructFromJSON(completed, title, dueDate, priority, notes = null, checklist = null) {
+        this.#completed = completed;
         this.#title = title;
         this.#dueDate = dueDate;
         if (typeof priority === 'number') {
             const matchedPriority = priorityMap.get(priority);
-            console.log(matchedPriority, priorityMap);
             if (matchedPriority) {
                 this.#priority = matchedPriority;
             } else {
@@ -99,6 +97,7 @@ class ToDo {
 
     serializeJSON() {
         const publicObj = { 
+            completed: this.#completed,
             title: this.#title,
             dueDate: this.#dueDate,
             priority: this.#priority,
@@ -109,7 +108,7 @@ class ToDo {
     }
 
     static deserializeJSON(jsonStr) {
-        const {title, dueDate, priority, notes, checklist} = JSON.parse(jsonStr, (key, val) => {
+        const {completed, title, dueDate, priority, notes, checklist} = JSON.parse(jsonStr, (key, val) => {
             if (key === 'dueDate') {
                 return new Date(val);
             }
@@ -117,7 +116,7 @@ class ToDo {
         });
         
         const privateObj = new ToDo('blank', 'blank', 1);
-        privateObj.#constructFromJSON(title, dueDate, priority.value, notes, checklist);
+        privateObj.#constructFromJSON(completed, title, dueDate, priority.value, notes, checklist);
         return privateObj;
     }
 }

@@ -1,3 +1,7 @@
+body > .dialog-content {
+    display: none;
+}
+
 #info-box {
 
     pointer-events: none;
@@ -46,6 +50,36 @@
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     border-bottom: 0.25rem solid #eee;
+}
+
+#info-body .centered-heading {
+    font-size: 2rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 0.25rem solid #eee;
+    text-align: center;
+}
+
+.delete-projs-btn {
+    background-color: #ddd;
+    border: none;
+    border-radius: 1rem;
+    transition: color .2s, background-color .2s, font-size .2s;
+    margin: 0 auto;
+    padding: 1rem;
+    align-items: center;
+    font-weight: bold;
+    gap: 2ch;
+    cursor: pointer;
+}
+.delete-projs-btn iconify-icon {
+    font-size: 1.5rem;
+}
+
+.delete-projs-btn:hover {
+    color: #fff;
+    background: red;
+    font-size: 1.5rem;
 }
 
 

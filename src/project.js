@@ -23,6 +23,13 @@ class Project {
     #toDoList = new Array();
 
     constructor(color, name, isBlankDefault = false) {
+
+        // overloading in javascript ??????
+        if (arguments.length === 1 && typeof arguments[0] === 'object') {
+            this.#constructFromJSON(color);
+            return;
+        }
+
         this.color = color;
         this.name = name;
         this.#isBlankDefault = isBlankDefault; 
@@ -30,7 +37,11 @@ class Project {
         this.#ID = randomID16();
     }
 
-    #constructFromJSON(color, name, ID, toDoList) {
+    
+    /**
+     * @param {publicProject} object
+     */
+    #constructFromJSON({color, name, ID, toDoList}) {
         this.color = color;
         this.name = name;
         this.#ID = ID;
@@ -101,11 +112,12 @@ class Project {
     static deserializeJSON(jsonStr) {
         
         /** @type {publicProject} */
-        const {color, name, ID, toDoList} = JSON.parse(jsonStr);
-        obj.toDoList.forEach((val, index, array) => {
+        const publicObj = JSON.parse(jsonStr);
+        publicObj.toDoList.forEach((val, index, array) => {
             array[index] = ToDo.deserializeJSON(val);
         });
 
+        const obj = new Project(publicObj);
         return obj;
     }
 
@@ -117,11 +129,23 @@ class Project {
      * @param {Project} project 
      */
     static setActiveProject(project) {
-
-
-
-        Storage.setStorage(project.#ID, )
+        Storage.setStorage(project.#ID, project.serializeJSON());
         this.#activeProject = project;
+        this.storeProjectData();
+    }
+
+    static reset() {
+        this.#activeProject = this.#blankProject;
+        this.#projects.splice(0, this.#projects.length);
+    }
+
+    static storeProjectData() {
+        const arrayCopy = Array.from(this.#projects);
+        arrayCopy.forEach((val, index, array) => {
+            array[index] = val.getID();
+        });
+        const json = JSON.stringify(arrayCopy);
+        Storage.setStorage("_projectIDS_", json);
     }
 
     /**
@@ -136,10 +160,37 @@ class Project {
 
     static appendToProjects(...projects) {
         this.#projects.push(...projects);
+        this.storeProjectData();
     }
 
     static getProjects() {
         return Array.from(this.#projects);
+    }
+
+    static retrieveProjects() {
+        const result = Storage.getStorage("_projectIDS_");
+        if (typeof result === 'undefined' || result === null) {
+            return;
+        }
+        /** @type {string[]} result */
+        const parsed = JSON.parse(result);
+
+        // sort by date
+        parsed.sort();
+
+        parsed.forEach((val, index, array) => {
+            array[index] = Storage.getStorage(val);
+        });
+
+        if (parsed.length == 0) {
+            return;
+        }
+
+        parsed.forEach(val => {
+            const object = Project.deserializeJSON(val);
+            this.#projects.push(object);
+        });
+        
     }
 }
 

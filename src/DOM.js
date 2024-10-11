@@ -2,6 +2,7 @@ import { Project } from './project';
 import './dialog.css'
 import { ToDo } from './todo';
 
+import { Storage } from './storage';
 class DialogWindow {
     static #dialog = document.querySelector("#info-box");
     static #dialogBody = this.#dialog.querySelector("#info-body");
@@ -20,7 +21,7 @@ class DialogWindow {
         this.#dialogBody.replaceChildren();
     }
 
-    static appendElement(elementType, classes, textContent, ID = null, parent = "#info-body") {
+    static emplaceElement(elementType, classes, textContent, ID = null, parent = "#info-body") {
         const element = document.createElement(elementType);
         element.classList.add(...classes);
         element.textContent = textContent;
@@ -28,6 +29,10 @@ class DialogWindow {
             element.ID = ID;
         document.querySelector(parent).appendChild(element);
     }
+
+    static appendElement(parent, ...nodes) {
+        this.#dialog.querySelector(parent).append(...nodes);
+    };
 
     static open() {
         this.#dialog.show();
@@ -58,7 +63,8 @@ class DOMEditor {
     static notesProjBtn = document.querySelector("#notes-proj");
     static datesProjBtn = document.querySelector("#dates-proj");
 
-
+    static aboutBtn = document.querySelector("#about");
+    static settingsBtn = document.querySelector("#settings");
 
 
     // "static constructor"
@@ -109,17 +115,18 @@ class DOMEditor {
 
             console.log(project);
             this.updateProjectList();
+            this.updateActiveProject();
         });
 
         this.deleteProjBtn.addEventListener('click', e => {
             DialogWindow.resetContent();
-            DialogWindow.appendElement("h3", ["heading"], "Delete a project...");
+            DialogWindow.emplaceElement("h3", ["heading"], "Delete a project...");
             DialogWindow.open();
         });
         
         this.renameProjBtn.addEventListener('click', e => {
             DialogWindow.resetContent();
-            DialogWindow.appendElement("h3", ["heading"], "Rename this project...");
+            DialogWindow.emplaceElement("h3", ["heading"], "Rename this project...");
             DialogWindow.open();
         });
         
@@ -135,21 +142,47 @@ class DOMEditor {
             DialogWindow.open();
         });
 
+        this.settingsBtn.addEventListener('click', e => {
+            const content = document.querySelector("#settingsDialog");
+            const deleteBtn = content.querySelector(".delete-projs-btn");
+            
+            deleteBtn.addEventListener('click', e => {
+                Storage.clearStorage();
+                Project.reset();
+                this.updateProjectList();
+                this.updateActiveProject();
+                DialogWindow.resetContent();
+            });
+
+            DialogWindow.appendElement('#info-body', content);
+            DialogWindow.open();
+            
+        });
+
         console.log("Events assigned");
 
-
+        Project.retrieveProjects();
+        this.updateProjectList();   
     }
 
     static updateActiveProject() {
-        this.main.replaceChildren();
         const activeProject = Project.getActiveProject();
         const icon = document.querySelector("#project-icon");
+        
+        if (Project.isActiveBlank()) {
+            this.updateMainContent();
+            icon.textContent = 'B';
+            icon.removeAttribute('style');
+            document.querySelector("#project-name").textContent = 'Blank Project';
+            return;
+        }
+
         let projectName = activeProject.name;
         if (projectName.length > 12) {
             projectName = projectName.slice(0, 9) + '...';
         }
         document.querySelector("#project-name").textContent = activeProject.name;
-        icon.textContent = activeProject.name.toUpperCase().at(-1);
+        icon.textContent = activeProject.name.at(-1);
         icon.setAttribute('style', `background: linear-gradient(135deg, ${activeProject.color} 0%, hsl(from ${activeProject.color} h s calc(l - 10)) 100%);`);
         this.updateMainContent();
     }
@@ -169,11 +202,13 @@ class DOMEditor {
             });
 
             this.projectDropdown.appendChild(projectListing);
-
         }
     }
 
     static updateMainContent() {
+        this.main.replaceChildren(this.main.querySelector("#blank-content"));
+        this.main.querySelector("#blank-content iconify-icon").setAttribute('icon', 'material-symbols:scan-delete-outline-rounded');
+
         if (!Project.isActiveBlank()) {
             if (this.main.classList.contains("empty")) {
                 this.main.classList.remove("empty");
@@ -186,6 +221,8 @@ class DOMEditor {
             }
         }
         
+        
+
         const activeProject = Project.getActiveProject();
         const toDoList = activeProject.getTodos();
         const listElem = document.createElement('ul');
@@ -213,7 +250,7 @@ class DOMEditor {
             // Inner buttons scope
             {
                 
-                /**
+                /**        // update array storages
                  * @type {{name: string, icon: string, alt: string}[]}
                  */
                 const BUTTONS = [
@@ -317,8 +354,11 @@ class DOMEditor {
                 } else {
                     iconCheck.setAttribute("icon", 'material-symbols:circle-outline');
                 }
+
                 activeProject.removeTodo(index);
                 activeProject.emplaceTodo(index, toDo);
+
+                Project.setActiveProject(activeProject);
             }
 
             li.addEventListener('dblclick', switchHandler);
@@ -327,8 +367,6 @@ class DOMEditor {
             li.classList.add('flex', toDo.getPriorityString());
             
             iconMore.addEventListener('click', e => {
-                const json = activeProject.serializeJSON()
-                console.log(json, Project.deserializeJSON(json));
                 moreContent.classList.toggle('show');
             });
             
