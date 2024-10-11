@@ -162,7 +162,7 @@ main > ul > li > iconify-icon  {
 .more-content.show > * {
     color: #000;
     cursor: pointer;
-    animation: swipeContent .1s forwards;
+    animation: swipeContent .3s forwards;
     font-size: 1.25rem;
     transition: font-size .3s;
     padding: .5rem;
@@ -181,11 +181,13 @@ main > ul > li.one {
 
 main > ul > li.two {
     color: var(--priorityTwo);
+    font-size: 1.25rem;
 }
 
 main > ul > li.three {
     color: var(--priorityThree);
     font-weight: bold;
+    font-size: 1.5rem;
 }
 
 @keyframes swipe {
@@ -202,10 +204,8 @@ main > ul > li.three {
 @keyframes swipeContent {
     from {
         opacity: 0%;
-        display: none;
     }
     to {
         opacity: 100%;
-        display: block;
     }
 }

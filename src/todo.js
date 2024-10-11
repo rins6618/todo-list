@@ -1,14 +1,17 @@
 /**
  * Priority enum
  * @readonly
- * @enum {{name: string}}
+ * @enum {{name: string, value: number}}
  */
 const Priority = Object.freeze({
-    ONE:   { name: "one" },
-    TWO:  { name: "two"},
-    THREE: { name: "three" }
-  });
+    ONE:   { name: "one" , value: 1},
+    TWO:  { name: "two", value: 2},
+    THREE: { name: "three", value: 3}
+});
 
+const priorityMap = new Map(
+    Object.values(Priority).map(p => [p.value, p])
+);
 
 class ToDo {
 
@@ -28,18 +31,12 @@ class ToDo {
         this.#title = title;
         this.#dueDate = dueDate;
         if (typeof priority === 'number') {
-            switch (priority) {
-                case 1:
-                    this.#priority = Priority.ONE;
-                    break;
-                case 2:
-                    this.#priority = Priority.TWO;
-                    break;
-                case 3:
-                    this.#priority = Priority.THREE;
-                    break;
-                default:
-                    throw new RangeError("Priority doesn't exist");
+            const matchedPriority = priorityMap.get(priority);
+            console.log(matchedPriority, priorityMap);
+            if (matchedPriority) {
+                this.#priority = matchedPriority;
+            } else {
+                throw new RangeError("Priority doesn't exist");
             }
         } else {
             throw new TypeError("Wrong type for priority");
@@ -57,8 +54,25 @@ class ToDo {
         this.#completed = bool;
     }
 
+    setPriority(priority) {
+        if (typeof priority === 'number') {
+            const matchedPriority = priorityMap.get(priority);
+            if (matchedPriority) {
+                this.#priority = matchedPriority;
+            } else {
+                throw new RangeError("Priority doesn't exist");
+            }
+        } else {
+            throw new TypeError("Wrong type for priority");
+        }
+    }
+
     getPriorityString() {
         return this.#priority.name;
+    }
+
+    getPriorityValue() {
+        return this.#priority.value;
     }
 
     getTitle() {

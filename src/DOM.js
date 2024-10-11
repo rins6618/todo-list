@@ -101,19 +101,7 @@ class DOMEditor {
             project.pushTodo(
                 new ToDo('Super Extra Long Todo Name That Gets Clipped', new Date(), 1), 
                 new ToDo('Do that', new Date(), 2), 
-                new ToDo('and that', new Date(), 3), 
-
-                new ToDo('Do this', new Date(), 3), 
-                new ToDo('Do that', new Date(), 1), 
-                new ToDo('and that', new Date(), 2), 
-
-                new ToDo('Do this', new Date(), 2), 
-                new ToDo('Do that', new Date(), 1), 
-                new ToDo('and that', new Date(), 3), 
-
-                new ToDo('Do this', new Date(), 3), 
-                new ToDo('Do that', new Date(), 2), 
-                new ToDo('and that', new Date(), 1), 
+                new ToDo('and that', new Date(), 3)
             );    
 
             Project.setActiveProject(project);
@@ -169,6 +157,8 @@ class DOMEditor {
     static updateProjectList() {
         this.projectDropdown.replaceChildren();
         const projects = Project.getProjects();
+
+        projects.sort((a, b) => a.getID() > b.getID() ? 1 : -1 );
         for (let project of projects) {
             const projectListing = document.createElement('div');
             projectListing.textContent = project.name;
@@ -230,27 +220,60 @@ class DOMEditor {
                     {name: 'move-up', icon: 'material-symbols:arrow-upward-alt-rounded', alt: 'Move to-do up...'},
                     {name: 'move-down', icon: 'material-symbols:arrow-downward-alt-rounded', alt: 'Move to-do down...'},
                     {name: 'delete', icon: 'material-symbols:delete-outline-rounded', alt: 'Remove to-do...'},
-                    {name: 'change-priority', icon: 'material-symbols:stack-star', alt: 'Change priority...'},
+                    {name: 'cycle-priority', icon: 'material-symbols:stack-star', alt: 'Cycle priority...'},
                 ];
 
+                // callback function:
+                // design: change data, then DOM
                 const callback = function(name) {
                     let parent, idx, max;
+                    
+                    parent = li.parentNode;
+                    max = [...parent.children].length - 1;
+                    idx = [...parent.children].indexOf(li);
+
                     switch (name) {
                         case 'move-up':
-                            parent = li.parentNode;
-                            idx = [...parent.children].indexOf(li);
+
                             if (idx <= 0) return;
                             const above = [...parent.children][idx - 1];
-                            above.before(li);
+                            
+                            activeProject.swapTodos(idx, idx - 1);
+                            Project.setActiveProject(activeProject);
+                            
+                            li.after(above);
                             break;
+
                         case 'move-down':
-                            parent = li.parentNode;
-                            max = [...parent.children].length - 1;
-                            idx = [...parent.children].indexOf(li);
+
                             if (idx >= max) return;
                             const below = [...parent.children][idx + 1];
-                            below.after(li);
+                            
+                            activeProject.swapTodos(idx, idx + 1);
+                            Project.setActiveProject(activeProject);
+                            
+                            li.before(below);
                             break;
+
+                        case 'delete':
+
+                            activeProject.removeTodo(idx);
+                            Project.setActiveProject(activeProject);
+                            
+                            li.remove();
+                            break;
+
+                        case 'cycle-priority':
+                            
+                            const newPriority = (toDo.getPriorityValue()) % 3 + 1;
+                            toDo.setPriority(newPriority);
+                            activeProject.replaceTodo(index, toDo);
+                            
+                            li.classList.remove(...li.classList);
+                            li.classList.add('flex', toDo.getPriorityString());
+
+                            break;
+                        
                         default:
                     }
                 }
@@ -260,6 +283,7 @@ class DOMEditor {
                     const elem = document.createElement('iconify-icon');
                     elem.setAttribute('icon', icon);
                     elem.setAttribute('title', alt);
+
                     elem.addEventListener('click', e => {
                         callback(name);
                     });

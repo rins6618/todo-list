@@ -1,4 +1,5 @@
 import { ToDo } from './todo';
+import { randomID16 } from './utility';
 
 class Project {
 
@@ -11,11 +12,22 @@ class Project {
     color = 'red';
     name = 'Project1';
     #isBlankDefault;
+    #ID;
     
     /**@type { ToDo[] }*/
     #toDoList = new Array();
 
     constructor(color, name, isBlankDefault = false) {
+        this.color = color;
+        this.name = name;
+        this.#isBlankDefault = isBlankDefault; 
+
+        this.#ID = randomID16();
+    }
+
+    constructFromID(ID, json) {
+        this.#ID = ID;
+        const copy = JSON.parse(json);
         this.color = color;
         this.name = name;
         this.#isBlankDefault = isBlankDefault; 
@@ -37,11 +49,24 @@ class Project {
         this.#toDoList.splice(index, 0, ...todos);
     }
 
+    replaceTodo(index, todo) {
+        return this.#toDoList.splice(index, 1, todo);
+    }
+
     removeAllTodos() {
         return this.#toDoList.splice(0, this.#toDoList.length);
     }
 
-    
+    swapTodos(index1, index2) {
+        const aux = this.#toDoList.at(index1);
+        this.#toDoList[index1] = this.#toDoList[index2];
+        this.#toDoList[index2] = aux;
+    }       
+
+    // setting ID is counterintuitive
+    getID() {
+        return this.#ID;
+    }
 
     static isActiveBlank() {
         return this.#activeProject.#isBlankDefault;
