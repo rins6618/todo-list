@@ -43,7 +43,25 @@ class ToDo {
         }
         this.#notes = notes;
         this.#checklist = checklist;
-        
+    }
+
+    #constructFromJSON(title, dueDate, priority, notes = null, checklist = null) {
+        this.#completed = false;
+        this.#title = title;
+        this.#dueDate = dueDate;
+        if (typeof priority === 'number') {
+            const matchedPriority = priorityMap.get(priority);
+            console.log(matchedPriority, priorityMap);
+            if (matchedPriority) {
+                this.#priority = matchedPriority;
+            } else {
+                throw new RangeError("Priority doesn't exist");
+            }
+        } else {
+            throw new TypeError("Wrong type for priority");
+        }
+        this.#notes = notes;
+        this.#checklist = checklist;
     }
 
     isCompleted() {
@@ -79,7 +97,7 @@ class ToDo {
         return this.#title;
     }
 
-    exposeJSON() {
+    serializeJSON() {
         const publicObj = { 
             title: this.#title,
             dueDate: this.#dueDate,
@@ -89,9 +107,22 @@ class ToDo {
         };
         return JSON.stringify(publicObj);
     }
+
+    static deserializeJSON(jsonStr) {
+        const {title, dueDate, priority, notes, checklist} = JSON.parse(jsonStr, (key, val) => {
+            if (key === 'dueDate') {
+                return new Date(val);
+            }
+            return val;
+        });
+        
+        const privateObj = new ToDo('blank', 'blank', 1);
+        privateObj.#constructFromJSON(title, dueDate, priority.value, notes, checklist);
+        return privateObj;
+    }
 }
 
 console.log("Todo loaded");
 
-export {ToDo};
+export {ToDo};  
 

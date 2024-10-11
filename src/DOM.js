@@ -327,6 +327,8 @@ class DOMEditor {
             li.classList.add('flex', toDo.getPriorityString());
             
             iconMore.addEventListener('click', e => {
+                const json = activeProject.serializeJSON()
+                console.log(json, Project.deserializeJSON(json));
                 moreContent.classList.toggle('show');
             });
             

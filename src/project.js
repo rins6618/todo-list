@@ -1,9 +1,14 @@
 import { ToDo } from './todo';
 import { randomID16 } from './utility';
+import { Storage } from './storage';
+
+
 
 class Project {
 
     static #blankProject = new Project('gray', 'Blank', true);
+    
+    /** @type { Project } */
     static #activeProject = this.#blankProject;
 
     /** @type { Project[] } */
@@ -25,12 +30,14 @@ class Project {
         this.#ID = randomID16();
     }
 
-    constructFromID(ID, json) {
-        this.#ID = ID;
-        const copy = JSON.parse(json);
+    #constructFromJSON(color, name, ID, toDoList) {
         this.color = color;
         this.name = name;
-        this.#isBlankDefault = isBlankDefault; 
+        this.#ID = ID;
+        this.#toDoList = toDoList;
+
+        // the blank project is NEVER serialized
+        this.#isBlankDefault = false; 
     }
 
     getTodos() {
@@ -68,12 +75,52 @@ class Project {
         return this.#ID;
     }
 
+    /**
+     * @typedef {Object} publicProject
+     * @property {string} color;
+     * @property {string} name;
+     * @property {string} id;
+     * @property {Todo[]} toDoList;
+     */
+    serializeJSON() {
+        const publicObj = { 
+            color: this.color,
+            name: this.name,
+            ID: this.#ID,
+            toDoList: Array.from(this.#toDoList)
+        };
+
+        publicObj.toDoList.forEach( (toDo, index, array) => {
+            array[index] = toDo.serializeJSON();
+        });
+
+        return JSON.stringify(publicObj);
+    
+    }
+
+    static deserializeJSON(jsonStr) {
+        
+        /** @type {publicProject} */
+        const {color, name, ID, toDoList} = JSON.parse(jsonStr);
+        obj.toDoList.forEach((val, index, array) => {
+            array[index] = ToDo.deserializeJSON(val);
+        });
+
+        return obj;
+    }
+
     static isActiveBlank() {
         return this.#activeProject.#isBlankDefault;
     }
 
-
+    /**
+     * @param {Project} project 
+     */
     static setActiveProject(project) {
+
+
+
+        Storage.setStorage(project.#ID, )
         this.#activeProject = project;
     }
 
