@@ -13,14 +13,14 @@ import { Storage } from './storage';
  *
  * @class Project
  * @typedef {Project}
- */
+*/
 class Project {
-
+    
     static #blankProject = new Project('gray', 'Blank', true);
     
     /** @type { Project } */
     static #activeProject = this.#blankProject;
-
+    
     /** @type { Project[] } */
     static #projects = new Array();
 
@@ -61,10 +61,11 @@ class Project {
         this.#isBlankDefault = false; 
     }
 
+    
     getTodos() {
         return Array.from(this.#toDoList);
     }
-
+    
     removeTodo(index) {
         return this.#toDoList.splice(index, 1);
     }
@@ -76,32 +77,32 @@ class Project {
     emplaceTodo(index, ...todos) {
         this.#toDoList.splice(index, 0, ...todos);
     }
-
+    
     replaceTodo(index, todo) {
         return this.#toDoList.splice(index, 1, todo);
     }
-
+    
     removeAllTodos() {
         return this.#toDoList.splice(0, this.#toDoList.length);
     }
-
+    
     swapTodos(index1, index2) {
         const aux = this.#toDoList.at(index1);
         this.#toDoList[index1] = this.#toDoList[index2];
         this.#toDoList[index2] = aux;
     }       
-
+    
     // setting ID is counterintuitive
     getID() {
         return this.#ID;
     }
-
-
+    
+    
     // json marshalling is a SOLID violation
     // Single Principle
     // Not fond of implementing a module for this project in particular.
-
-
+    
+    
     /**
      * @typedef {Object} publicProject
      * @property {string} color;
@@ -116,15 +117,15 @@ class Project {
             ID: this.#ID,
             toDoList: Array.from(this.#toDoList)
         };
-
+        
         publicObj.toDoList.forEach( (toDo, index, array) => {
             array[index] = toDo.serializeJSON();
         });
-
+        
         return JSON.stringify(publicObj);
-    
+        
     }
-
+    
     static deserializeJSON(jsonStr) {
         
         /** @type {publicProject} */
@@ -132,7 +133,7 @@ class Project {
         publicObj.toDoList.forEach((val, index, array) => {
             array[index] = ToDo.deserializeJSON(val);
         });
-
+        
         const obj = new Project(publicObj);
         return obj;
     }
@@ -145,6 +146,7 @@ class Project {
      * @param {Project} project 
      */
     static setActiveProject(project) {
+        Storage.setStorage('_activeProject_', project.#ID);
         Storage.setStorage(project.#ID, project.serializeJSON());
         this.#activeProject = project;
         this.storeProjectData();
@@ -161,7 +163,7 @@ class Project {
             array[index] = val.getID();
         });
         const json = JSON.stringify(arrayCopy);
-        Storage.setStorage("_projectIDS_", json);
+        Storage.setStorage('_projectIDS_', json);
     }
 
     /**
@@ -184,7 +186,8 @@ class Project {
     }
 
     static retrieveProjects() {
-        const result = Storage.getStorage("_projectIDS_");
+        const result = Storage.getStorage('_projectIDS_');
+        const active = Storage.getStorage('_activeProject_');
         if (typeof result === 'undefined' || result === null) {
             return;
         }
@@ -204,6 +207,7 @@ class Project {
 
         parsed.forEach(val => {
             const object = Project.deserializeJSON(val);
+            if (object.getID() === active) this.#activeProject = object;
             this.#projects.push(object);
         });
         

@@ -12,7 +12,7 @@ class DialogWindow {
     
     static assignEvents() {
         window.addEventListener('click', e => {
-            if (!e.target.matches('#info-body, .dialog-button')) {
+            if (!e.target.matches('#info-body, #info-body *, .dialog-button')) {
                 if (this.#dialog.open) {
                 this.close();
                 }
@@ -74,7 +74,7 @@ class DOMEditor {
                 this.closeBtn.setAttribute("icon", 'material-symbols:side-navigation');
             }
         }
-        changeButton
+        changeButton();
 
         mobile.addEventListener("change", changeButton);
 
@@ -104,18 +104,24 @@ class DOMEditor {
 
 
         
-        const COLORS = ['rgb(214, 44, 75)', 'rgb(148, 173, 215)', 'rgb(155, 236, 0)', 'rgb(249, 76, 16)', 'rgb(248, 222, 34)', 'rgb(210, 100, 154)'];
+        const COLORS = [{color: 'rgb(214, 44, 75)', name: 'Red'},   
+            {color: 'rgb(148, 173, 215)', name: 'Blue'}, 
+            {color: 'rgb(155, 236, 0)', name: 'Lime'},
+            {color: 'rgb(249, 76, 16)', name: 'Orange'}, 
+            {color: 'rgb(248, 222, 34)', name: 'Yellow'}, 
+            {color: 'rgb(210, 100, 154)', name: 'Magenta'}];
+
         let counter = 1;
         this.createProjBtn.addEventListener('click', e => {
             
             const idx = Math.floor(Math.random() * COLORS.length);  
-            const project = new Project(COLORS[idx], `Project${counter}`, false);
+            const project = new Project(COLORS[idx].color, `Project${counter}`, false);
             counter++;
     
             project.pushTodo(
-                new ToDo('Super Extra Long Todo Name That Gets Clipped', new Date(), 1), 
-                new ToDo('Do that', new Date(), 2), 
-                new ToDo('and that', new Date(), 3)
+                new ToDo('To-do\'s have three levels of priority', new Date(), 3), 
+                new ToDo('Double-click the name to rename a to-do', new Date(), 2), 
+                new ToDo('Use the options to do quick actions', new Date(), 1)
             );    
 
             Project.setActiveProject(project);
@@ -135,11 +141,50 @@ class DOMEditor {
         
         this.renameProjBtn.addEventListener('click', e => {
             DialogWindow.resetContent();
-            DialogWindow.emplaceElement("h3", ["heading"], "Rename this project...");
+            const content = document.querySelector("#rename-dialog");
+            const nameElem = content.querySelector("#rename");
+            const formElem = content.querySelector("form");
+            const callback = e => {
+                console.log('RENAMING PROJECT TO ', nameElem.value);
+                const activeProject = Project.getActiveProject();
+                activeProject.name = nameElem.value;
+                nameElem.value = '';
+                Project.setActiveProject(activeProject);
+                this.updateActiveProject();
+                this.updateProjectList();
+                formElem.removeEventListener('submit', callback);
+            };
+
+            formElem.addEventListener('submit', callback);
+
+            DialogWindow.appendElement('#info-body', content);
             DialogWindow.open();
         });
         
         this.recolorProjBtn.addEventListener('click', e => {
+            DialogWindow.resetContent();
+            const content = document.querySelector("#recolor-dialog");
+            const grid = content.querySelector('#color-grid');
+            [...grid.children].forEach( (value, index, array) => {
+                value.setAttribute('style', `background: linear-gradient(135deg, ${COLORS[index].color} 0%, hsl(from ${COLORS[index].color} h s calc(l - 10)) 100%);`);
+                value.setAttribute('title', COLORS[index].name);
+                value.textContent = COLORS[index].name.at(0);
+                
+                const callback = e => {
+                    console.log('RECOLORING PROJECT TO ', COLORS[index].color);
+                    const activeProject = Project.getActiveProject();
+                    activeProject.color = COLORS[index].color;
+                    Project.setActiveProject(activeProject);
+                    this.updateActiveProject();
+                    this.updateProjectList();
+                    DialogWindow.close();
+                };
+                
+                value.addEventListener('click', callback);
+            
+            
+            });
+            DialogWindow.appendElement('#info-body', content);
             DialogWindow.open();
         });
         
@@ -167,15 +212,24 @@ class DOMEditor {
                 DialogWindow.resetContent();
             });
 
+            DialogWindow.resetContent();
             DialogWindow.appendElement('#info-body', content);
             DialogWindow.open();
             
         });
 
+        this.aboutBtn.addEventListener('click', e => {
+            const content = document.querySelector("#about-dialog");
+            DialogWindow.resetContent();
+            DialogWindow.appendElement('#info-body', content);
+            DialogWindow.open();
+        });
+
         console.log("Events assigned");
 
         Project.retrieveProjects();
-        this.updateProjectList();   
+        this.updateProjectList();
+        this.updateActiveProject();   
     }
 
     static updateActiveProject() {
@@ -195,7 +249,7 @@ class DOMEditor {
             projectName = projectName.slice(0, 9) + '...';
         }
         document.querySelector("#project-name").textContent = activeProject.name;
-        icon.textContent = activeProject.name.at(-1);
+        icon.textContent = activeProject.name.at(0);
         icon.setAttribute('style', `background: linear-gradient(135deg, ${activeProject.color} 0%, hsl(from ${activeProject.color} h s calc(l - 10)) 100%);`);
         this.updateMainContent();
     }
@@ -271,6 +325,7 @@ class DOMEditor {
                     {name: 'move-down', icon: 'material-symbols:arrow-downward-alt-rounded', alt: 'Move to-do down...'},
                     {name: 'delete', icon: 'material-symbols:delete-outline-rounded', alt: 'Remove to-do...'},
                     {name: 'cycle-priority', icon: 'material-symbols:stack-star', alt: 'Cycle priority...'},
+                    {name: 'add-todo', icon:'mdi:add-bold', alt:'Add to-do below...'}
                 ];
 
                 // callback function:
@@ -323,8 +378,13 @@ class DOMEditor {
                             li.classList.add('flex', toDo.getPriorityString());
 
                             break;
-                        
+                        case 'add-todo':
+                            const newTodo = new ToDo('Next task', new Date(), 2);
+                            activeProject.emplaceTodo(index + 1, newTodo);
+                            Project.setActiveProject(activeProject);
+                            DOMEditor.updateMainContent();
                         default:
+                            console.error('Something terrible happened:', name);
                     }
                 }
 
@@ -335,6 +395,7 @@ class DOMEditor {
                     elem.setAttribute('title', alt);
 
                     elem.addEventListener('click', e => {
+                        elem.classList.toggle('show');
                         callback(name);
                     });
                     moreContent.appendChild(elem);
@@ -350,8 +411,8 @@ class DOMEditor {
 
             const text = document.createElement('span');
             let todoName = toDo.getTitle();
-            if (todoName.length > 40) {
-                todoName = todoName.slice(0, 40 - 3) + '...';
+            if (todoName.length > 48) {
+                todoName = todoName.slice(0, 48 - 3) + '...';
             }
 
             text.textContent = todoName;
@@ -374,7 +435,34 @@ class DOMEditor {
                 Project.setActiveProject(activeProject);
             }
 
-            li.addEventListener('dblclick', switchHandler);
+            text.addEventListener('dblclick', e => {
+                text.classList.toggle('hidden');
+                const form = document.createElement('form');
+                const textbox = document.createElement('input');
+                form.appendChild(textbox);
+                form.addEventListener('submit', e => {
+                    e.preventDefault();
+                    console.log(`Hello, ${textbox.value}`);
+                    todoName = textbox.value;
+                    toDo.setTitle(todoName);
+                    
+                    if (todoName.length > 48) {
+                        todoName = todoName.slice(0, 48 - 3) + '...';
+                    }
+                    
+                    text.textContent = todoName;
+                    text.classList.toggle('hidden');
+                
+                    activeProject.replaceTodo(index, toDo);
+    
+                    Project.setActiveProject(activeProject);
+
+                    form.remove();
+                    
+                });
+                iconMore.before(form);
+            });
+
             iconCheck.addEventListener('click', switchHandler);
 
             li.classList.add('flex', toDo.getPriorityString());
@@ -383,8 +471,13 @@ class DOMEditor {
                 moreContent.classList.toggle('show');
             });
             
+            window.addEventListener('click', e => {
+                const list = [...li.childNodes];
+                if (!list.includes(e.target) && moreContent.classList.contains('show')) {
+                    moreContent.classList.remove('show');
+                }
+            });
 
-            moreContent
             li.append(iconCheck, text, iconMore, moreContent);
             
             listElem.appendChild(li);

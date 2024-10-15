@@ -91,6 +91,10 @@ class ToDo {
         return this.#priority.value;
     }
 
+    setTitle(title) {
+        this.#title = title;
+    }
+
     getTitle() {
         return this.#title;
     }

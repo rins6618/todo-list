@@ -45,6 +45,66 @@ body > .dialog-content {
     box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
+
+#rename-dialog form span {
+    width: 90%;
+    height: 4rem;
+    font-size: 1.5rem;
+    align-items: center;
+}
+
+#rename-dialog label[for=rename] {
+    width: fit-content;
+    padding-right: 2ch;
+    flex: 0 0 auto;
+}
+
+#rename-dialog input {
+    font-size: 1.5rem;
+    flex: 1;
+    padding: 1rem;
+    height: 100%;
+    background-color: #eee;
+    color: #444;
+    font-weight: bold;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-bottom: .25rem solid #aaa;
+}
+
+#recolor-dialog > #color-grid {
+    margin: 0 auto;
+    margin-top: 2rem;
+    height: 60%;
+    aspect-ratio: 120 / 76 ;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 3rem;
+}
+
+#color-grid > * {
+    cursor: pointer;
+    margin: 1.5rem;
+    transition: margin .3s, font-size .3s, font-weight .3s;
+    border-radius: 1rem;
+
+    justify-content: center;
+    align-items: center;
+
+    font-size: 2rem;
+    color: #fff;
+}
+
+#color-grid > *:hover {
+    margin: 0;
+    font-size: 4rem;
+
+    font-weight: bold;
+}
+
+
+
 #info-body .heading {
     font-size: 2rem;
     padding-bottom: 1rem;
@@ -52,15 +112,48 @@ body > .dialog-content {
     border-bottom: 0.25rem solid #eee;
 }
 
-#info-body .centered-heading {
-    font-size: 2rem;
-    padding-bottom: 1rem;
-    margin-bottom: 1rem;
-    border-bottom: 0.25rem solid #eee;
+#info-body > .flex {
+    height: 100%;
+    flex-direction: column;
+}
+
+#info-body form {
+    padding: 2rem;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    align-items: center;
+    position: relative;
+    gap: 4ch;
+}
+
+#info-body button {
+    background-color: #ddd;
+    border: none;
+    border-radius: 1rem;
+    transition: color .2s, background-color .2s, font-size .2s;
+    margin: 0 auto;
+    padding: 1rem;
+    align-items: center;
+    font-weight: bold;
+    gap: 2ch;
+    cursor: pointer;
+}
+
+#info-body button:hover {
+    background: #aaa;
+    font-size: 1.05rem;
+}
+
+#info-body .center {
     text-align: center;
 }
 
-.delete-projs-btn {
+#info-body .bottom {
+    margin-top: auto;
+}
+
+#info-body .delete-projs-btn {
     background-color: #ddd;
     border: none;
     border-radius: 1rem;
@@ -76,12 +169,16 @@ body > .dialog-content {
     font-size: 1.5rem;
 }
 
-.delete-projs-btn:hover {
+#info-body .delete-projs-btn:hover {
     color: #fff;
     background: red;
     font-size: 1.5rem;
 }
 
+#info-body .dialog-content {
+    width: 100%;
+    height: 100%;
+}
 
 @media only screen and (max-width: 600px) {
     #info-box[open] > #info-body {

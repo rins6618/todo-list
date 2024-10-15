@@ -95,16 +95,14 @@
 </body>
 </html>
 
-<div id="about-dialog" class="dialog-content">
-    <h3 class="centered-heading">Settings</h3>
-    <button class="delete-projs-btn flex">
-        <iconify-icon icon="material-symbols:scan-delete-outline-rounded"></iconify-icon>
-        <span> Delete history </span>
+<div id="about-dialog" class="dialog-content flex">
+    <h3 class="center heading">About</h3>
+        <span class="bottom center"> The icons used are part of Material Symbols by Google, Material Design Icons by Pictogrammers and Remix Icons by Remix Design. All are licensed on the Apache 2.0 license.</span>
     </button>
 </div>
 
 <div id="settings-dialog" class="dialog-content">
-    <h3 class="centered-heading">Settings</h3>
+    <h3 class="center heading">Settings</h3>
     <button class="delete-projs-btn flex">
         <iconify-icon icon="material-symbols:scan-delete-outline-rounded"></iconify-icon>
         <span> Delete history </span>
@@ -119,6 +117,17 @@
     </button>
 </div>
 
+<div id="rename-dialog" class="dialog-content">
+    <h3 class="heading">Rename this project...</h3>
+    
+    <form action="" method="dialog" class="flex">
+        <span class="flex"><label for="rename">New name:    </label>
+        <input type="text" name="rename" id="rename"></span>
+        <button class="flex"> Rename </button>
+    </form>
+
+</div>
+
 <div id="delete-dialog" class="dialog-content">
     <h3 class="heading">Delete a project...</h3>
     <p> Select a project below: </p>
@@ -127,9 +136,13 @@
 </div>
 
 <div id="recolor-dialog" class="dialog-content">
-    <h3 class="centered-heading">Settings</h3>
-    <button class="delete-projs-btn flex">
-        <iconify-icon icon="material-symbols:scan-delete-outline-rounded"></iconify-icon>
-        <span> Delete history </span>
-    </button>
+    <h3 class="heading">Change color...</h3>
+    <div id='color-grid' class="grid">
+        <div class="color flex"></div>
+        <div class="color flex"></div>
+        <div class="color flex"></div>
+        <div class="color flex"></div>
+        <div class="color flex"></div>
+        <div class="color flex"></div>
+    </div>
 </div>

@@ -93,6 +93,7 @@ main > .bottom {
 }
 
 main > ul > li {
+    width: 100%;
     position: relative;
     align-items: center;
     padding: 0.75rem;
@@ -104,9 +105,26 @@ main > ul > li:hover {
 }
 
 main > ul > li > span {
-    pointer-events: none;
     user-select: none;
     margin-right: auto;
+}
+
+main > ul > li > form {
+    width: 56ch;
+    height: 75%;
+    background-color: transparent;
+}
+
+main form input {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-bottom: .25rem solid #aaa;
+}
+
+main > ul > li > span.hidden {
+    display: none;
 }
 
 main > ul > li > iconify-icon  {
@@ -117,6 +135,7 @@ main > ul > li > iconify-icon  {
 }
 
 .more {
+    margin-left: auto;
     font-size: 1.5rem;
     border-radius: 0.5rem;
     color: #000;
