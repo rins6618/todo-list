@@ -49,18 +49,6 @@
                     </button>
                 </li>
                 <li>
-                    <button class="flex dialog-button" id="notes-proj">
-                        <iconify-icon icon="material-symbols:featured-play-list-outline"></iconify-icon>
-                        <span class="flex">View notes...</span>
-                    </button>
-                </li>
-                <li>
-                    <button class="flex dialog-button" id="dates-proj">
-                        <iconify-icon icon="material-symbols:calendar-clock-outline-rounded"></iconify-icon>
-                        <span class="flex">View due dates...</span>
-                    </button>
-                </li>
-                <li>
                     <button class="flex dialog-button" id="recolor-proj">
                         <iconify-icon icon="mdi:paint-outline"></iconify-icon></iconify-icon>
                         <span class="flex">Change project color...</span>
@@ -145,4 +133,11 @@
         <div class="color flex"></div>
         <div class="color flex"></div>
     </div>
+</div>
+
+<div id="todo-dialog" class="dialog-content">
+    <h3 class="center heading" id="todo-title">{todo}</h3>
+    <div class="center sub" id="todo-date"> {date} </div>
+    
+    <div id="notes"></div>
 </div>

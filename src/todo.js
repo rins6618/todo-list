@@ -17,16 +17,18 @@ class ToDo {
 
     #completed;
     #title;
+
+    
+    /** @type {Date} */
     #dueDate;
 
     /** @type { Priority } */
     #priority;
 
     //optional
-    #notes;
     #checklist;
 
-    constructor(title, dueDate, priority, notes = null, checklist = null) {
+    constructor(title, dueDate, priority, checklist = null) {
         this.#completed = false;
         this.#title = title;
         this.#dueDate = dueDate;
@@ -40,11 +42,10 @@ class ToDo {
         } else {
             throw new TypeError("Wrong type for priority");
         }
-        this.#notes = notes;
         this.#checklist = checklist;
     }
 
-    #constructFromJSON(completed, title, dueDate, priority, notes = null, checklist = null) {
+    #constructFromJSON(completed, title, dueDate, priority, checklist = null) {
         this.#completed = completed;
         this.#title = title;
         this.#dueDate = dueDate;
@@ -58,7 +59,6 @@ class ToDo {
         } else {
             throw new TypeError("Wrong type for priority");
         }
-        this.#notes = notes;
         this.#checklist = checklist;
     }
 
@@ -99,6 +99,14 @@ class ToDo {
         return this.#title;
     }
 
+    setDueDate(date) {
+        this.#dueDate = date;
+    }
+
+    getDueDate() {
+        return this.#dueDate;
+    }
+
     // json marshalling is a SOLID violation
     // Single Principle
     // Not fond of implementing a module for this project in particular.
@@ -109,7 +117,6 @@ class ToDo {
             title: this.#title,
             dueDate: this.#dueDate,
             priority: this.#priority,
-            notes: this.#notes,
             checklist: this.#checklist 
         };
         return JSON.stringify(publicObj);
@@ -123,8 +130,10 @@ class ToDo {
             return val;
         });
         
+
+        //fix this, or maybe not. focus on implementation first
         const privateObj = new ToDo('blank', 'blank', 1);
-        privateObj.#constructFromJSON(completed, title, dueDate, priority.value, notes, checklist);
+        privateObj.#constructFromJSON(completed, title, dueDate, priority.value, checklist);
         return privateObj;
     }
 }

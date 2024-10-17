@@ -1,7 +1,7 @@
 import { Project } from './project';
 import './dialog.css'
 import { ToDo } from './todo';
-
+import { DateFormat } from './format';
 import { Storage } from './storage';
 
 
@@ -56,8 +56,6 @@ class DOMEditor {
     static deleteProjBtn = document.querySelector("#delete-proj");
     static renameProjBtn = document.querySelector("#rename-proj");
     static recolorProjBtn = document.querySelector("#recolor-proj");
-    static notesProjBtn = document.querySelector("#notes-proj");
-    static datesProjBtn = document.querySelector("#dates-proj");
 
     static aboutBtn = document.querySelector("#about");
     static settingsBtn = document.querySelector("#settings");
@@ -187,14 +185,6 @@ class DOMEditor {
             DialogWindow.appendElement('#info-body', content);
             DialogWindow.open();
         });
-        
-        this.notesProjBtn.addEventListener('click', e => {
-            DialogWindow.open();
-        });
-        
-        this.datesProjBtn.addEventListener('click', e => {
-            DialogWindow.open();
-        });
 
         this.aboutBtn.addEventListener('click', e => {
 
@@ -304,8 +294,9 @@ class DOMEditor {
         this.main.append(gradientTop, gradientBottom);
         listElem.classList.add("flex");
 
-        toDoList.forEach( (toDo, index) => {
+        const todoDOM = (toDo, index) => {
             const li = document.createElement('li');
+            li.classList.add('dialog-button');
 
             const iconCheck = document.createElement("iconify-icon");
             const iconMore = document.createElement("iconify-icon");
@@ -372,7 +363,7 @@ class DOMEditor {
                             
                             const newPriority = (toDo.getPriorityValue()) % 3 + 1;
                             toDo.setPriority(newPriority);
-                            activeProject.replaceTodo(index, toDo);
+                            activeProject.replaceTodo(idx, toDo);
                             
                             li.classList.remove(...li.classList);
                             li.classList.add('flex', toDo.getPriorityString());
@@ -380,9 +371,10 @@ class DOMEditor {
                             break;
                         case 'add-todo':
                             const newTodo = new ToDo('Next task', new Date(), 2);
-                            activeProject.emplaceTodo(index + 1, newTodo);
+                            activeProject.emplaceTodo(idx + 1, newTodo);
                             Project.setActiveProject(activeProject);
-                            DOMEditor.updateMainContent();
+                            todoDOM(newTodo, idx+1);
+                            break;
                         default:
                             console.error('Something terrible happened:', name);
                     }
@@ -442,7 +434,6 @@ class DOMEditor {
                 form.appendChild(textbox);
                 form.addEventListener('submit', e => {
                     e.preventDefault();
-                    console.log(`Hello, ${textbox.value}`);
                     todoName = textbox.value;
                     toDo.setTitle(todoName);
                     
@@ -465,6 +456,18 @@ class DOMEditor {
 
             iconCheck.addEventListener('click', switchHandler);
 
+            li.addEventListener('dblclick', e => {
+                if (!e.target.matches('li.dialog-button')) return;
+                DialogWindow.resetContent();
+                const content = document.querySelector('#todo-dialog');
+                const title = content.querySelector('#todo-title');
+                title.textContent = todoName;
+                const date = content.querySelector('#todo-date');
+                date.textContent = `Due by ${DateFormat.formatDate(toDo.getDueDate())}`;
+                DialogWindow.appendElement('#info-body', content);
+                DialogWindow.open();
+            });
+
             li.classList.add('flex', toDo.getPriorityString());
             
             iconMore.addEventListener('click', e => {
@@ -480,7 +483,18 @@ class DOMEditor {
 
             li.append(iconCheck, text, iconMore, moreContent);
             
-            listElem.appendChild(li);
+            const childNodes = [...listElem.childNodes];
+            const anchor = childNodes[index];
+            console.log(anchor);
+            if (anchor === undefined) {
+                listElem.appendChild(li);
+                return;
+            }    
+            anchor.before(li);
+        }
+
+        toDoList.forEach( (toDo, index) => {
+            todoDOM(toDo, index);
         });
         this.main.appendChild(listElem);
     }
