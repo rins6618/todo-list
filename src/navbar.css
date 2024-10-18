@@ -6,7 +6,7 @@
     padding: 1rem;
 
     /* funny reason */
-    transition: width .3s, height .3s;
+    transition: width .3s;
 
     position: fixed;
     z-index: 2;

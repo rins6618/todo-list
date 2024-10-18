@@ -54,6 +54,12 @@
                         <span class="flex">Change project color...</span>
                     </button>
                 </li>
+                <li>
+                    <button class="flex dialog-button" id="sort-proj">
+                        <iconify-icon icon="material-symbols:calendar-clock-outline-rounded"></iconify-icon></iconify-icon>
+                        <span class="flex">Sort to-dos by due date...</span>
+                    </button>
+                </li>
             </ul>
         </div>
         <footer>
@@ -85,13 +91,15 @@
 
 <div id="about-dialog" class="dialog-content flex">
     <h3 class="center heading">About</h3>
+    <p class="center"> Source code on <a href="https://www.github.com/rins6618/todo-list"> GitHub</a> </p>
+    <p class="center"> To cancel renaming a to-do, press Escape anywhere in the window </p>
         <span class="bottom center"> The icons used are part of Material Symbols by Google, Material Design Icons by Pictogrammers and Remix Icons by Remix Design. All are licensed on the Apache 2.0 license.</span>
     </button>
 </div>
 
 <div id="settings-dialog" class="dialog-content">
     <h3 class="center heading">Settings</h3>
-    <button class="delete-projs-btn flex">
+    <button class="delete-projs-btn flex" title="This will delete ALL localStorage of the page">
         <iconify-icon icon="material-symbols:scan-delete-outline-rounded"></iconify-icon>
         <span> Delete history </span>
     </button>
@@ -139,5 +147,8 @@
     <h3 class="center heading" id="todo-title">{todo}</h3>
     <div class="center sub" id="todo-date"> {date} </div>
     
-    <div id="notes"></div>
+    <form id="description" class="flex">
+        <div>No description attached to this to-do.</div>
+        <textarea name="description-area" id="description-area"></textarea>
+    </form>
 </div>

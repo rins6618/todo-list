@@ -1,4 +1,9 @@
-import { DateFormat } from "./format";
+import { addDays } from "date-fns";
+
+function futureTodo() {
+    const amount = 4 + Math.floor(Math.random() * 3);
+    return addDays(new Date(), amount);
+}
 
 function randomID16() {
     
@@ -27,4 +32,6 @@ function randomID16() {
 
 }
 
-export { randomID16 };
+
+
+export { randomID16, futureTodo };

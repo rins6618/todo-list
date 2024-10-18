@@ -1,3 +1,5 @@
+// I wanted to try this on my own. Could've used date-fns
+
 class DateFormat {
 
     static DAYS = [
@@ -42,8 +44,8 @@ class DateFormat {
     }
 
     /** @param {Date} dateObj  */
-    static formatDate(dateObj) {
-        return `${this.#addOrdinal(dateObj.getDate())} ${this.MONTHS[dateObj.getMonth()]} (${this.DAYS[dateObj.getDay()]})`;
+    static formatDueDate(dateObj) {
+        return `${this.MONTHS[dateObj.getMonth()]} ${this.#addOrdinal(dateObj.getDate())}, ${dateObj.getFullYear()} (${this.DAYS[dateObj.getDay()]})`;
     }
 
 }

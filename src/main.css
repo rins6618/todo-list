@@ -107,6 +107,20 @@ main > ul > li:hover {
 main > ul > li > span {
     user-select: none;
     margin-right: auto;
+    max-width: 50%;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    --thickness: .1em;
+    --strike: 0;
+
+
+    /* Thanks vsync! https://stackoverflow.com/a/72459455/27660104 */
+    background: linear-gradient(90deg, transparent, currentColor 0) no-repeat 
+    right 60% / calc(var(--strike) * 100%) var(--thickness);
+  
+    transition: background-size .3s ease;
 }
 
 main > ul > li > form {
@@ -200,13 +214,37 @@ main > ul > li.one {
 
 main > ul > li.two {
     color: var(--priorityTwo);
-    font-size: 1.25rem;
+    font-size: 1rem;
 }
 
 main > ul > li.three {
     color: var(--priorityThree);
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+}
+
+main > ul > li.due {
+    color: #ff3333;
+}
+
+main > ul > li.completed > span {
+    --strike: 1;
+    background-position-x: left;
+}
+
+
+
+
+main > ul >li.due:hover {
+    background-color: #ffcccc;
+}
+
+main > ul > li.due.completed {
+    color: #119911;
+}
+
+main > ul >li.due.completed:hover {
+    background-color: #ccffcc;
 }
 
 @keyframes swipe {

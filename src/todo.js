@@ -1,3 +1,5 @@
+import { isAfter } from "date-fns";
+
 /**
  * Priority enum
  * @readonly
@@ -105,6 +107,10 @@ class ToDo {
 
     getDueDate() {
         return this.#dueDate;
+    }
+
+    isDue() {
+        return isAfter(new Date(), this.#dueDate);
     }
 
     // json marshalling is a SOLID violation

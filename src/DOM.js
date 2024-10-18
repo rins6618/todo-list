@@ -3,6 +3,8 @@ import './dialog.css'
 import { ToDo } from './todo';
 import { DateFormat } from './format';
 import { Storage } from './storage';
+import { futureTodo } from './utility';
+import { isAfter } from 'date-fns'
 
 
 // Dialog abstraction layer due to reuse and complex behaviour;
@@ -54,8 +56,10 @@ class DOMEditor {
     
     static createProjBtn = document.querySelector("#create-proj");
     static deleteProjBtn = document.querySelector("#delete-proj");
+
     static renameProjBtn = document.querySelector("#rename-proj");
     static recolorProjBtn = document.querySelector("#recolor-proj");
+    static sortProjBtn = document.querySelector("#sort-proj");
 
     static aboutBtn = document.querySelector("#about");
     static settingsBtn = document.querySelector("#settings");
@@ -117,9 +121,10 @@ class DOMEditor {
             counter++;
     
             project.pushTodo(
-                new ToDo('To-do\'s have three levels of priority', new Date(), 3), 
-                new ToDo('Double-click the name to rename a to-do', new Date(), 2), 
-                new ToDo('Use the options to do quick actions', new Date(), 1)
+                new ToDo('To-do\'s have three levels of priority', futureTodo(), 3), 
+                new ToDo('Double-click the name to rename a to-do', futureTodo(), 2), 
+                new ToDo('Use the options to do quick actions', futureTodo(), 1),
+                new ToDo('Double-click the background to view information', new Date('November 1, 2025 03:24:00'), 2)
             );    
 
             Project.setActiveProject(project);
@@ -184,6 +189,16 @@ class DOMEditor {
             });
             DialogWindow.appendElement('#info-body', content);
             DialogWindow.open();
+        });
+
+        this.sortProjBtn.addEventListener('click', e => {
+            const activeProject = Project.getActiveProject();
+            const todoList = activeProject.getTodos();
+            todoList.sort((a, b) => isAfter(a.getDueDate(), b.getDueDate()) ? 1 : -1);
+            activeProject.removeAllTodos();
+            activeProject.pushTodo(...todoList);
+            Project.setActiveProject(activeProject);
+            this.updateMainContent();
         });
 
         this.aboutBtn.addEventListener('click', e => {
@@ -298,6 +313,12 @@ class DOMEditor {
             const li = document.createElement('li');
             li.classList.add('dialog-button');
 
+            
+            if (toDo.isDue()) {
+                li.setAttribute('title', "This to-do is due.");
+                li.classList.add('due');
+            }
+
             const iconCheck = document.createElement("iconify-icon");
             const iconMore = document.createElement("iconify-icon");
             iconMore.classList.add('more');
@@ -370,7 +391,7 @@ class DOMEditor {
 
                             break;
                         case 'add-todo':
-                            const newTodo = new ToDo('Next task', new Date(), 2);
+                            const newTodo = new ToDo('Next task', futureTodo()  , 2);
                             activeProject.emplaceTodo(idx + 1, newTodo);
                             Project.setActiveProject(activeProject);
                             todoDOM(newTodo, idx+1);
@@ -397,8 +418,10 @@ class DOMEditor {
             iconMore.setAttribute("icon", 'material-symbols:more-horiz');
             if (toDo.isCompleted()) {
                 iconCheck.setAttribute("icon", 'material-symbols:check-circle-rounded');
+                li.classList.add('completed');
             } else {
                 iconCheck.setAttribute("icon", 'material-symbols:circle-outline');
+                li.classList.remove('completed');
             }
 
             const text = document.createElement('span');
@@ -432,6 +455,16 @@ class DOMEditor {
                 const form = document.createElement('form');
                 const textbox = document.createElement('input');
                 form.appendChild(textbox);
+                const windowCallback = (e) => {
+                    if (e.key === 'Escape') {
+                        text.classList.toggle('hidden');
+                        form.remove();
+                        window.removeEventListener('keydown', windowCallback);
+                    }
+                }
+
+                window.addEventListener('keydown', windowCallback);
+
                 form.addEventListener('submit', e => {
                     e.preventDefault();
                     todoName = textbox.value;
@@ -463,7 +496,9 @@ class DOMEditor {
                 const title = content.querySelector('#todo-title');
                 title.textContent = todoName;
                 const date = content.querySelector('#todo-date');
-                date.textContent = `Due by ${DateFormat.formatDate(toDo.getDueDate())}`;
+                toDo.isDue() ? date.classList.add('due') : date.classList.remove('due');
+                toDo.isCompleted() ? date.classList.add('completed') : date.classList.remove('completed');
+                date.textContent = `Due by ${DateFormat.formatDueDate(toDo.getDueDate())}`;
                 DialogWindow.appendElement('#info-body', content);
                 DialogWindow.open();
             });
